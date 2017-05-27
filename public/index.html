@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script
+        src="http://code.jquery.com/jquery-3.2.1.js"
+        integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Login</title>
+</head>
+<body>
+    <!-- Div to display login/registration input (error)fields/buttons -->
+    <div class="row login-input center">
+        <div class="col-sm-4 col-sm-offset-4">
+            <div id="login-error"></div>
+            <input type="text" id="username" placeholder="username">
+            <input type="password" id="password" placeholder="password" style="margin-bottom: 10px">
+            <button class="btn btn-primary" id="login">Login</button>
+            <button class="btn btn-info" id="register">Register</button>
+        </div>
+    </div>
+
+    <script>
+        // Click listener for login submission, complete with error handler and page redirection
+        $('#login').click(function() {
+            $.post('/api/login', {
+                username: $('#username').val(),
+                password: $('#password').val()
+            }, function(res) {
+                if (res === "error") {
+                    $('#login-error').text('Error: Username or password incorrect or you need to register first');
+                } else {
+                    $('#username').val('');
+                    $("#password").val('');
+                    window.location.href = "chat.html";
+                } 
+            });
+        });
+
+        // Click listener for registration submission, complete with error handler and further directions
+         $('#register').click(function() {
+            $.post('/api/register', {
+                username: $('#username').val(),
+                password: $('#password').val()
+            }, function(res) {
+                if (res === "exists") {
+                    $('#login-error').text('Error: the username ' + $('#username').val() + ' already exist.');
+                } else {
+                    $('#login-error').text('Registered! Try logging in...');
+                } 
+            });
+        });
+
+    </script>
+</body>
+</html>

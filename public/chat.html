@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script
+        src="http://code.jquery.com/jquery-3.2.1.js"
+        integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Chat</title>
+</head>
+<body>
+    <!-- Div to display headers and input field/button -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4" style="text-align: center">
+                <h1>Welcome to My Fucking Chat Room</h1>
+                <p>Just try and be a part of my database without server space</p><br>
+                <input type="text" class="form-control" id="newChat"><br>
+                <button class="btn btn-default" id="sendChat">Send Chat</button>
+            </div>
+        </div>
+    </div><br>
+    <!-- Div to display the output chat messages -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 well" id="chatsOutput">
+                <!-- 
+                    * Set a fixed height in relation to the screen
+                    * Add a scroll feature to occur when chats exceed fixed height
+                    * Change displayChats()'s prepend() to append()
+                    * Figure out how to pin most recent message to bottom line
+                    * Put input field (lines 21-22) below this div
+                -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Checks for authentication, in case someone tried to skip logging in
+		$(document).ready(function() {
+			$.get('/api/authentication', function(data){
+				if(data === "error"){
+					window.location.href = "index.html";
+				}
+			});
+		});
+
+		// Sends new chat messages from the text input field to databse
+		function sendChat(){
+			var newChat = $('#newChat').val();
+			$('#newChat').val("");
+			$.post('/api/newChats', {
+				message: newChat,
+				type: "general"
+			}, function(res){
+				if(res === "success"){
+				getChats();
+			}
+			});
+		}
+
+		// Get chats from the database and calls a function to display them (below)
+		function getChats(){
+			$.get('/api/getChats', function(res){
+				var chats = res;
+				displayChats(chats);
+			});
+		}
+
+		// Displays chats by clearing and then repopulating the field that displays them
+		function displayChats(chats){
+			$('#chatsOutput').empty();
+			var generalChats = [];
+			for(var j = 0; j < chats.length; j++){
+				if(chats[j].type === "general"){
+					generalChats.push(chats[j]);
+				}
+			}
+			// Posts the newest chat messages on top (for the time being...)
+			for(var i = 0; i < generalChats.length; i++){
+				$('#chatsOutput').prepend("<p><strong>" + generalChats[i].username + " : </strong>" + generalChats[i].message + "</p>");
+			}
+		}
+
+        // Click listener for chat message submission
+		$('#sendChat').click(sendChat);
+
+        // Automatic update every one second
+        setInterval(getChats, 1000);
+
+        // Automatically displays chat message history
+		getChats();
+        
+    </script>
+</body>
+</html>
