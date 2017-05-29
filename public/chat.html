@@ -16,28 +16,30 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-md-offset-4" style="text-align: center">
-                <h1>Welcome to My Fucking Chat Room</h1>
-                <p>Just try and be a part of my database without server space</p><br>
-                <input type="text" class="form-control" id="newChat"><br>
-                <button class="btn btn-default" id="sendChat">Send Chat</button>
+                <h1>Chat Room</h1>
+                <p> a work in progress </p><br>
+
             </div>
         </div>
     </div><br>
     <!-- Div to display the output chat messages -->
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1 well" id="chatsOutput">
+        <div class="row" >
+            <div class="col-md-10 col-md-offset-1 well pre-scrollable" id="chatsOutput">
                 <!-- 
                     * Set a fixed height in relation to the screen
-                    * Add a scroll feature to occur when chats exceed fixed height
-                    * Change displayChats()'s prepend() to append()
                     * Figure out how to pin most recent message to bottom line
-                    * Put input field (lines 21-22) below this div
                 -->
             </div>
         </div>
     </div>
-
+	<br>
+	<div class="container">
+		<div class="row">
+			<input type="text" class="form-control" id="newChat"><br>
+			<button class="btn btn-default" id="sendChat">Send Chat</button>
+		</div>	
+	</div>
     <script>
         // Checks for authentication, in case someone tried to skip logging in
 		$(document).ready(function() {
@@ -54,7 +56,7 @@
 			$('#newChat').val("");
 			$.post('/api/newChats', {
 				message: newChat,
-				type: "general"
+				type: "testroom"
 			}, function(res){
 				if(res === "success"){
 				getChats();
@@ -73,15 +75,15 @@
 		// Displays chats by clearing and then repopulating the field that displays them
 		function displayChats(chats){
 			$('#chatsOutput').empty();
-			var generalChats = [];
+			var outputChats = [];
 			for(var j = 0; j < chats.length; j++){
-				if(chats[j].type === "general"){
-					generalChats.push(chats[j]);
+				if(chats[j].type === "testroom"){
+					outputChats.push(chats[j]);
 				}
 			}
 			// Posts the newest chat messages on top (for the time being...)
-			for(var i = 0; i < generalChats.length; i++){
-				$('#chatsOutput').prepend("<p><strong>" + generalChats[i].username + " : </strong>" + generalChats[i].message + "</p>");
+			for(var i = 0; i < outputChats.length; i++){
+				$('#chatsOutput').append("<p><strong>" + outputChats[i].username + " : </strong>" + outputChats[i].message + "</p>");
 			}
 		}
 

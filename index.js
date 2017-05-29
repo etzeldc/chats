@@ -67,6 +67,7 @@ app.post('/api/register', function(req, res){
 	});
 });
 
+
 // User Login Endpoint
 app.post('/api/login', function(req, res){
 	// Checks to see if the user profile exists
@@ -79,6 +80,7 @@ app.post('/api/login', function(req, res){
 			return;
 		}
 		// If the user profile exists: associates this cookie (or session) with this user's profile
+		// Will need to include a post to the database to update the user's current location 
 		req.session.user = {
 			_id: data._id,
 			username: data.username
