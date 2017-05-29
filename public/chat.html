@@ -25,12 +25,7 @@
     <!-- Div to display the output chat messages -->
     <div class="container">
         <div class="row" >
-            <div class="col-md-10 col-md-offset-1 well pre-scrollable" id="chatsOutput">
-                <!-- 
-                    * Set a fixed height in relation to the screen
-                    * Figure out how to pin most recent message to bottom line
-                -->
-            </div>
+            <div class="well pre-scrollable" id="chatsOutput"></div>
         </div>
     </div>
 	<br>
@@ -48,6 +43,7 @@
 					window.location.href = "index.html";
 				}
 			});
+			
 		});
 
 		// Sends new chat messages from the text input field to databse
@@ -81,7 +77,8 @@
 					outputChats.push(chats[j]);
 				}
 			}
-			// Posts the newest chat messages on top (for the time being...)
+			// Posts the newest chat messages at the bottom of the displayed chat field
+			// Still need to figure out how to display already scrolled to bottom
 			for(var i = 0; i < outputChats.length; i++){
 				$('#chatsOutput').append("<p><strong>" + outputChats[i].username + " : </strong>" + outputChats[i].message + "</p>");
 			}
@@ -92,6 +89,7 @@
 
         // Automatic update every one second
         setInterval(getChats, 1000);
+
 
         // Automatically displays chat message history
 		getChats();
