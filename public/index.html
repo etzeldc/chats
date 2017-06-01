@@ -41,17 +41,23 @@
         });
 
         // Click listener for registration submission, complete with error handler and further directions
-         $('#register').click(function() {
-            $.post('/api/register', {
-                username: $('#username').val(),
-                password: $('#password').val()
-            }, function(res) {
-                if (res === "exists") {
-                    $('#login-error').text('Error: the username ' + $('#username').val() + ' already exist.');
-                } else {
-                    $('#login-error').text('Registered! Try logging in...');
-                } 
-            });
+        $('#register').click(function() {
+            if ($('#username').val().length < 3) {
+                $('#login-error').text('Error: this username is not at least 3 characters long.');
+            } else if ($('#password').val().length < 6) {
+                $('#login-error').text('Error: this password is not at least 6 characters long.');
+            } else {
+                $.post('/api/register', {
+                    username: $('#username').val(),
+                    password: $('#password').val()
+                }, function(res) {
+                    if (res === "exists") {
+                        $('#login-error').text('Error: the username ' + $('#username').val() + ' already exist.');
+                    } else {
+                        $('#login-error').text('Registered! Try logging in...');
+                    } 
+                });
+            }
         });
 
     </script>
